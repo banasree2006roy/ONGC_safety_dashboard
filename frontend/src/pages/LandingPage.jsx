@@ -180,8 +180,11 @@
 // };
 
 // export default LandingPage;
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { subscribe, getNotifications } from "../lib/notifications";
+import NotificationCenter from "../components/common/NotificationCenter";
 import {
   FaUserShield,
   FaUsersCog,
@@ -195,6 +198,8 @@ import {
 
 const LandingPage = () => {
   const navigate = useNavigate();
+
+  
 
   const portals = [
     {
@@ -246,7 +251,43 @@ const LandingPage = () => {
       icon: <FaBuilding />,
     },
   ];
+  const recentAlerts = [
+  {
+    time: "10:45 AM",
+    title: "Helmet Violation Detected",
+    severity: "High",
+  },
+  {
+    time: "09:30 AM",
+    title: "Worker Check-In Completed",
+    severity: "Info",
+  },
+  {
+    time: "08:50 AM",
+    title: "Gas Leakage Warning",
+    severity: "Critical",
+  },
+  {
+    time: "08:10 AM",
+    title: "Safety Inspection Completed",
+    severity: "Normal",
+  },
+];
 
+  // Map severity labels to requested color codes
+  const severityColors = {
+    High: "#ff6600", // Orange
+    Info: "#3366ff", // Blue
+    Critical: "#ff0000", // Red
+    Normal: "#009900", // Green
+  };
+  // live notifications from NotificationCenter (shared store)
+  const [liveNotifications, setLiveNotifications] = useState([]);
+  useEffect(() => {
+    setLiveNotifications(getNotifications());
+    const unsub = subscribe((list) => setLiveNotifications(list));
+    return () => unsub();
+  }, []);
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Navbar */}
@@ -268,23 +309,21 @@ const LandingPage = () => {
                 Oil & Natural Gas Corporation
               </p>
             </div>
+            <div className="flex items-center gap-4">
+              <NotificationCenter />
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-<div className="text-center py-16">
+      <div className="text-center py-16">
 
   <motion.h1
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1 }}
-    className="
-      text-4xl md:text-6xl
-      font-bold
-      tracking-wide
-      text-white
-    "
+    className="text-4xl md:text-6xl font-bold tracking-wide text-white"
   >
     ONGC AI INDUSTRIAL
     <br />
@@ -292,36 +331,10 @@ const LandingPage = () => {
   </motion.h1>
 
 <motion.p
-  animate={{
-    backgroundPosition: [
-      "0% 50%",
-      "100% 50%",
-      "0% 50%",
-    ],
-  }}
-  transition={{
-    duration: 8,
-    repeat: Infinity,
-    ease: "linear",
-  }}
-  style={{
-    backgroundSize: "200% 200%",
-  }}
-  className="
-    mt-8
-    text-lg md:text-xl
-    max-w-4xl
-    mx-auto
-    text-center
-    font-medium
-    leading-relaxed
-    bg-gradient-to-r
-    from-red-500
-    via-yellow-300
-    to-white
-    bg-clip-text
-    text-transparent
-  "
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1.2 }}
+  className="mt-8 text-lg md:text-xl max-w-4xl mx-auto text-center font-medium leading-relaxed text-yellow-300"
 >
   Real-Time Workforce Monitoring, Risk Detection,
   Task Management and Industrial Safety Analytics
@@ -367,7 +380,7 @@ const LandingPage = () => {
           ].map(([value, label], index) => (
             <div
               key={index}
-              className="bg-slate-900 border border-red-800 rounded-2xl p-6 text-center"
+              className="bg-slate-900 border border-red-800 text-white rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:shadow-red-500/40"
             >
               <h3 className="text-4xl font-bold text-red-500">
                 {value}
@@ -389,14 +402,32 @@ const LandingPage = () => {
 
         <div className="grid md:grid-cols-3 gap-8">
           {portals.map((portal, index) => (
-            <motion.div
+            /*<motion.div
               key={index}
-              whileHover={{ scale: 1.03 }}
+              //whileHover={{ scale: 1.03 }}
+              whileHover={{
+               scale: 1.05,
+                y: -10,
+                }}
+                transition={{ duration: 0.3 }}
               className="bg-slate-900 border border-red-800 rounded-3xl p-8"
-            >
-              <div className="text-red-500 mb-5">
-                {portal.icon}
-              </div>
+            >*/
+            <motion.div
+  key={index}
+  whileHover={{
+    scale: 1.05,
+    y: -10,
+    boxShadow: "0px 0px 30px rgba(255,0,0,0.6)",
+  }}
+  transition={{ duration: 0.3 }}
+            className="bg-slate-900 border border-red-800 rounded-3xl p-8 shadow-lg cursor-pointer"
+>
+              <motion.div
+  whileHover={{ rotate: 10, scale: 1.2 }}
+  className="text-red-500 mb-5"
+>
+  {portal.icon}
+</motion.div>
 
               <h3 className="text-2xl font-bold mb-4">
                 {portal.title}
@@ -427,7 +458,9 @@ const LandingPage = () => {
           {modules.map((module, index) => (
             <div
               key={index}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-6"
+              //className="bg-slate-900 border border-slate-800 rounded-2xl p-6"
+              //className="bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:border-red-500 hover:shadow-red-500/40"
+              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2 hover:border-red-500 hover:shadow-red-500/40"
             >
               <div className="text-red-500 text-3xl mb-4">
                 {module.icon}
@@ -442,6 +475,49 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
+      
+      {/* Recent Alerts Timeline */}
+
+<section className="max-w-7xl mx-auto px-6 pb-20">
+  <h2 className="text-3xl font-bold text-center text-red-500 mb-8">
+    RECENT ALERTS TIMELINE
+  </h2>
+
+  <div className="bg-slate-900 border border-red-800 text-white rounded-3xl p-8">
+
+    {([
+      ...liveNotifications.map((n) => ({ time: n.time, title: n.title, severity: n.severity })),
+      ...recentAlerts,
+    ]).map((alert, index) => {
+      const color = severityColors[alert.severity] || "#ff0000";
+      return (
+        <div
+          key={index}
+          className="flex items-center gap-6 border-b border-slate-700 py-4 last:border-none hover:bg-slate-800 transition-all duration-300 rounded-lg px-4"
+        >
+        <div
+            className="w-4 h-4 rounded-full"
+            style={{ backgroundColor: color }}
+          ></div>
+
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg">{alert.title}</h3>
+
+            <p className="text-gray-400 text-sm">{alert.time}</p>
+          </div>
+
+          <span
+            className="px-3 py-1 rounded-full text-sm"
+            style={{ backgroundColor: color, color: "#ffffff" }}
+          >
+            {alert.severity}
+          </span>
+        </div>
+      );
+    })}
+
+  </div>
+</section>
       <footer className="border-t border-slate-800 py-8 text-center text-gray-400">
         © 2026 ONGC AI Industrial Safety Platform
       </footer>

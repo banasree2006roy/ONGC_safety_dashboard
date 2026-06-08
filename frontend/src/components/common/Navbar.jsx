@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import NotificationCenter from "./NotificationCenter";
 
 const Navbar = () => {
 
@@ -18,7 +19,7 @@ const Navbar = () => {
 
   return (
 
-    <div className="bg-red-700 border-b border-red-900 px-8 py-4 flex justify-between items-center shadow-lg">
+    <div className={`px-8 py-4 flex justify-between items-center shadow-lg ${user ? "bg-red-700 border-b border-red-900" : "bg-red-700 border-b border-red-900"}`}>
 
       {/* Left Side */}
 
@@ -48,22 +49,17 @@ const Navbar = () => {
 
       <div className="flex items-center gap-6">
 
+        <NotificationCenter />
+
         <div className="text-right">
 
-          <p className="font-semibold">
-            {user?.full_name}
-          </p>
+          <p className="font-semibold">{user?.full_name}</p>
 
-          <p className="text-sm text-red-100">
-            {user?.role?.toUpperCase()}
-          </p>
+          <p className="text-sm text-red-100">{user?.role?.toUpperCase()}</p>
 
         </div>
 
-        <button
-          onClick={handleLogout}
-          className="bg-black hover:bg-gray-900 px-5 py-2 rounded-xl transition"
-        >
+        <button onClick={handleLogout} className="bg-black hover:bg-gray-900 px-5 py-2 rounded-xl transition">
           Logout
         </button>
 

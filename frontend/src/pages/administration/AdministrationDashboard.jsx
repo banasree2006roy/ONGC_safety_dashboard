@@ -97,7 +97,7 @@ const AdministrationDashboard = () => {
           Monthly Safety Reports
         </h2>
 
-        <ul className="space-y-2 text-gray-300">
+        <ul className="space-y-2 text-slate-900 dark:text-gray-300">
 
           <li>• Incident Reports</li>
 

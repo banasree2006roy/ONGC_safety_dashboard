@@ -126,7 +126,7 @@ const MyTasks = () => {
 
                 </div>
 
-                <div className="mt-4 space-y-2 text-gray-300">
+                <div className="mt-4 space-y-2 text-slate-900 dark:text-gray-300">
 
                   <p>
                     <span className="font-semibold text-white">
